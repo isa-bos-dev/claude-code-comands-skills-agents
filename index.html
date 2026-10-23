@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Referencia de Claude Code</title>
 <meta name="description" content="Referencia completa de comandos, skills y subagentes de Claude Code, con sintaxis y ejemplos de uso.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%20role=%22img%22%20aria-label=%22Comandos%20de%20Claude%20Code%22%3E%20%3Crect%20width=%2264%22%20height=%2264%22%20rx=%2214%22%20fill=%22%23c15f3c%22/%3E%20%3Cpath%20d=%22M25%2047%20L37%2017%22%20fill=%22none%22%20stroke=%22%23faf9f5%22%20stroke-width=%226.5%22%20stroke-linecap=%22round%22/%3E%20%3Cpath%20d=%22M41%2047%20H53%22%20fill=%22none%22%20stroke=%22%23faf9f5%22%20stroke-width=%226.5%22%20stroke-linecap=%22round%22/%3E%20%3C/svg%3E" type="image/svg+xml">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,7 +13,7 @@
 <header class="hero">
   <div class="wrap">
     <p class="eyebrow">Documentación de referencia</p>
-    <h1>Claude Code: comandos, flags y subagentes</h1>
+    <h1><img class="logo" src="favicon.svg" alt="" width="44" height="44"><span>Claude Code: comandos, flags y subagentes</span></h1>
     <p class="lead">Catálogo completo de los comandos <code>/</code> disponibles dentro de Claude Code, de los comandos y flags <code>--</code> que se usan desde la terminal antes de entrar, y de los subagentes. Cada entrada incluye su función, su caso de uso, la sintaxis exacta y ejemplos de invocación.</p>
     <dl class="stats">
       <div><dt>143</dt><dd>comandos y skills <code>/</code></dd></div>
@@ -63,6 +64,8 @@
     <code>a|b</code> una de las opciones.
     Los comandos <code>/</code> se escriben dentro de la sesión, al inicio del mensaje; los comandos y flags <code>claude …</code> se escriben en la terminal, antes de entrar.
   </aside>
+
+  <p id="resumen" class="resumen" role="status" aria-live="polite" hidden></p>
 
 <section class="group" id="sesion-y-conversacion">
 <h2>Sesión y conversación <span class="count">23</span></h2>
@@ -4285,19 +4288,38 @@ claude auto-mode reset [--yes]</pre>
   var items = Array.prototype.slice.call(document.querySelectorAll('details.item'));
   var groups = Array.prototype.slice.call(document.querySelectorAll('section.group'));
   var empty = document.getElementById('empty');
+  var resumen = document.getElementById('resumen');
+  var main = document.querySelector('main');
+  var toolbar = document.querySelector('.toolbar');
 
   function filter() {
-    var t = q.value.trim().toLowerCase();
+    var texto = q.value.trim();
+    var t = texto.toLowerCase();
     var visible = 0;
     items.forEach(function (i) {
       var show = !t || i.textContent.toLowerCase().indexOf(t) !== -1;
       i.hidden = !show;
       if (show) visible++;
     });
+    var categorias = 0;
     groups.forEach(function (g) {
       g.hidden = !g.querySelector('details.item:not([hidden])');
+      if (!g.hidden) categorias++;
     });
     empty.hidden = visible !== 0;
+
+    // Con búsqueda activa: se ocultan filtros y leyenda y se muestra solo el resultado
+    document.body.classList.toggle('buscando', !!t);
+    if (t) {
+      resumen.textContent = visible + (visible === 1 ? ' resultado' : ' resultados') +
+        ' para «' + texto + '»' + (visible ? ' en ' + categorias + (categorias === 1 ? ' categoría' : ' categorías') : '');
+      resumen.hidden = false;
+      // Lleva la vista al inicio de los resultados, justo bajo la barra de búsqueda
+      var top = main.getBoundingClientRect().top + window.pageYOffset - toolbar.offsetHeight;
+      window.scrollTo(0, Math.max(0, top));
+    } else {
+      resumen.hidden = true;
+    }
   }
 
   var y = document.getElementById('year');

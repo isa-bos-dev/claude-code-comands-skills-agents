@@ -290,3 +290,21 @@ code.cmd.sh::before { content: "$ "; }
 .foot .credit .c1 { color: #569cd6; }
 .foot .credit .c2 { color: #9cdcfe; }
 .foot .credit .c3 { color: #ce9178; }
+
+/* Búsqueda activa: se limpian filtros y leyenda para mostrar solo los resultados */
+body.buscando .chips,
+body.buscando .legend { display: none; }
+
+.resumen {
+  margin: 20px 0 0;
+  font-size: .95rem;
+  color: var(--muted);
+}
+.resumen[hidden] { display: none; }
+
+body.buscando .group:first-of-type { margin-top: 20px; }
+
+/* Logo delante del título */
+.hero h1 { display: flex; align-items: center; gap: 14px; }
+.hero h1 .logo { flex: none; width: 44px; height: 44px; border-radius: 10px; }
+@media (max-width: 640px) { .hero h1 .logo { width: 36px; height: 36px; } }
